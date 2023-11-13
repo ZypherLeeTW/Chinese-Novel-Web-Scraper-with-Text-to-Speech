@@ -16,7 +16,7 @@ This code scrapes Chinese online novels, extracts and cleans text, converts simp
    ```sh
    pip --version  
 
-  To install or upgrade pip, run:  
+3. **To install or upgrade pip, run:**   
   python -m pip install --upgrade pip
   
 ## Install  Packages  
@@ -29,3 +29,5 @@ This code scrapes Chinese online novels, extracts and cleans text, converts simp
   pip install opencc-python-reimplemented  
   pip install edge-tts  
   
+## Running the Code
+   You can now run the Python code above with the required packages installed. Provide the starting URL and the number of pages to download to begin.
