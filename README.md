@@ -1,5 +1,5 @@
 # Chinese-Novel-Web-Scraper-with-Text-to-Speech
-This code scrapes Chinese online novels, extracts and cleans text, converts simplified to traditional Chinese, and uses text-to-speech to create audio books. It takes a starting URL and number of pages to download. The result is an automated way to download and listen to Chinese literature.
+This code scrapes Chinese online novels, extracts and cleans text, converts simplified to traditional Chinese, and uses text-to-speech to create audio books.It takes a starting URL and number of pages to download. The result is an automated way to download and listen to Chinese literature.
 
 How to use?
 Installation Guide
@@ -25,11 +25,11 @@ pip installopencc-python-reimplemented
 pip installedge-tts
 
 ///
-requests - Sending HTTP requests
-fake-useragent - Generate random user agents
-beautifulsoup4 - Parse HTML
-opencc-python-reimplemented - Simplified Chinese to Traditional Chinese conversion
-edge-tts - Text-to-speech
+requests - Sending HTTP requests.
+fake-useragent - Generate random user agents.
+beautifulsoup4 - Parse HTML.
+opencc-python-reimplemented - Simplified Chinese to Traditional Chinese conversion.
+edge-tts - Text-to-speech.
 ///
 
 4. Run the Code
