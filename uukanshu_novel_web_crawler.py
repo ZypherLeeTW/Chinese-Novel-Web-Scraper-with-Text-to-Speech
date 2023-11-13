@@ -100,8 +100,6 @@ if __name__ == '__main__':
                 title, url, text = page_data(url)
                 text = ''.join(text)
 
-                
-
                 if not os.path.exists(f'./audio_file/{title}.wav'):
                     asyncio.run(main(f'./audio_file/{title}.wav', text))
 
