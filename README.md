@@ -1,12 +1,14 @@
 # Chinese-Novel-Web-Scraper-with-Text-to-Speech
 This code scrapes Chinese online novels, extracts and cleans text, converts simplified to traditional Chinese, and uses text-to-speech to create audio books.It takes a starting URL and number of pages to download. The result is an automated way to download and listen to Chinese literature.  
 
-*How to use?  *
+How to use?  
 Installation Guide  
+  
 1. Install Python  
 Download and install the latest version of Python from https://www.python.org/downloads/  
+
   
-*2. Install Pip  *
+2. Install Pip  
 Pip is the package manager for Python. It is usually installed by default with Python.  
   
 To check if you have pip installed, run:  
