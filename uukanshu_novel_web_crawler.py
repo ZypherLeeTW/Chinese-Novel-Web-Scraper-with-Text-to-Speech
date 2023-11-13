@@ -94,15 +94,16 @@ if __name__ == '__main__':
                 os.makedirs(text_folder)
 
             # Start copying
+            print(f'start copy : {now.strftime("%H:%M:%S")}')
             for i in range(copy_page):
 
                 title, url, text = page_data(url)
                 text = ''.join(text)
 
-                print(f'start copy {title} : {now.strftime("%H:%M:%S")}')
+                
 
                 if not os.path.exists(f'./audio_file/{title}.wav'):
                     asyncio.run(main(f'./audio_file/{title}.wav', text))
 
                 print(
-                    f'copy {title} done, time cost : {str(datetime.now() - now).split(".")[0]}')
+                    f'copy {title} done, pass : {str(datetime.now() - now).split(".")[0]}')
