@@ -24,11 +24,7 @@ This code scrapes Chinese online novels, extracts and cleans text, converts simp
    
   ###  Install the required packages by running:  
   ```sh
-  pip install requests  
-  pip install fake-useragent  
-  pip install beautifulsoup4  
-  pip install opencc-python-reimplemented  
-  pip install edge-tts
+  pip install requests&&pip install fake-useragent&&pip install beautifulsoup4&&pip install opencc-python-reimplemented&&pip install edge-tts
    ```
 ## **Running the Code**  
 You can now run the Python code above with the required packages installed. Provide the starting URL and the number of pages to download to begin.
