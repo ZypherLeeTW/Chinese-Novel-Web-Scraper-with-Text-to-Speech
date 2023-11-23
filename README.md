@@ -23,7 +23,7 @@ This code scrapes Chinese online novels, extracts and cleans text, converts simp
 ## Install  Packages  
    
   ###  Install the required packages by running:  
- 
+  ```sh
   pip install requests  
   pip install fake-useragent  
   pip install beautifulsoup4  
