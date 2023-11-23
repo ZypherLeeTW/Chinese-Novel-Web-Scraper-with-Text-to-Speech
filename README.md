@@ -16,8 +16,9 @@ This code scrapes Chinese online novels, extracts and cleans text, converts simp
    ```sh
    pip --version  
 
-3. **To install or upgrade pip, run:**   
-  python -m pip install --upgrade pip
+3. **To install or upgrade pip, run:**
+   ```sh
+   python -m pip install --upgrade pip
   
 ## Install  Packages  
    
