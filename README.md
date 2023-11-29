@@ -13,18 +13,25 @@ This code scrapes Chinese online novels, extracts and cleans text, converts simp
 2. **Install Pip**
 
    Pip is the package manager for Python. It is usually installed by default with Python. To check if you have pip installed, run:
+
    ```sh
-   pip --version  
+   pip --version
+
+   ```
 
 3. **To install or upgrade pip, run:**
    ```sh
    python -m pip install --upgrade pip
-  
-## **Install  Packages**  
-   
-  ###  Install the required packages by running:  
-  ```sh
-  pip install requests&&pip install fake-useragent&&pip install beautifulsoup4&&pip install opencc-python-reimplemented&&pip install edge-tts
    ```
-## **Running the Code**  
+
+## **Install Packages**
+
+### **Install the required packages by running:**  
+
+```sh
+pip install requests&&pip install fake-useragent&&pip install beautifulsoup4&&pip install opencc-python-reimplemented&&pip install edge-tts
+```
+
+## **Running the Code**
+
 You can now run the Python code above with the required packages installed. Provide the starting URL and the number of pages to download to begin.
