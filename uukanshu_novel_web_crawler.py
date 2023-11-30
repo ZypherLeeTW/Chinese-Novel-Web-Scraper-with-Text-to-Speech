@@ -9,14 +9,37 @@ import edge_tts
 import os
 import re
 
+ua = UserAgent()
 
-def get_page(url, headers):
+now = datetime.now()
+
+seed = now.timestamp()
+random.seed(seed)
+
+converter = OpenCC('s2t')
+
+
+headers = {
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "zh-TW,zh;q=0.9",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": ua.random,
+    "Connection": "keep-alive",
+    "Host": "www.uukanshu.com",
+    "Referer": "https://www.uukanshu.com/",
+}
+
+
+def get_page(url):
     response = requests.get(url, headers=headers)
     return response.text
 
 
-def parse_page_data(url, converter):
-    page = get_page(url, headers)
+def page_data(soup):
+    page = get_page(url)
     soup = BeautifulSoup(page, 'html.parser')
 
     timu = converter.convert(soup.find(id="timu").text)
@@ -46,104 +69,90 @@ def generate_audio_name(title):
     return title
 
 
-async def text_to_speech(output, text):
+async def main(output, text):
     voice = "zh-CN-YunyangNeural"
     tts = edge_tts.Communicate(text, voice)
     await tts.save(output)
 
-
 if __name__ == '__main__':
-    ua = UserAgent()
-    now = datetime.now()
-    seed = now.timestamp()
-    random.seed(seed)
-    converter = OpenCC('s2t')
 
-    headers = {
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-TW,zh;q=0.9",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-        "Upgrade-Insecure-Requests": "1",
-        "User-Agent": ua.random,
-        "Connection": "keep-alive",
-        "Host": "www.uukanshu.com",
-        "Referer": "https://www.uukanshu.com/",
-    }
+    text_folder = './text_file'
 
-    def copy_pages(zip_page, copy_page):
-        first_title = ''
-        last_title = ''
-        first_url = ''
-        last_url = ''
-        for i in range(copy_page//zip_page):
-            total_text = ''
-            for k in range(zip_page):
-                try:
-                    title, url, text = parse_page_data(url, converter)
-                    text = ''.join(text)
-                    total_text += text
-                    if k == 0:
-                        first_url = url
-                        first_title = title
-                    last_url = url
-                    last_title = title
-                except TypeError:
-                    print('URL error')
-                    break
+    url = input('Please enter the URL of your starting UU novel page:')
 
-            now = datetime.now()
-            try:
-                first_title = generate_audio_name(first_title)
-                last_title = generate_audio_name(last_title)
-                with open('./audio_file/url.txt', 'w', encoding='utf-8') as file:
-                    file.write(
-                        f'first page:{first_url}\n last page:{last_url}')
+    if url != '':
 
-                if not os.path.exists(f'./audio_file/第{first_title}節_第{last_title}節.wav'):
-                    asyncio.run(text_to_speech(
-                        f'./audio_file/第{first_title}節_第{last_title}節.wav', total_text))
-
-                print(
-                    f'Copy from section {first_title} to section {last_title} done. Time elapsed: {str(datetime.now() - now).split(".")[0]}')
-            except IndexError:
-                print('The title format is incorrect.')
-
-    def copy_single_page(copy_page):
-        for i in range(copy_page):
-            title, url, text = parse_page_data(url, converter)
-            text = ''.join(text)
-            now = datetime.now()
-
-            if not os.path.exists(f'./audio_file/{title}.wav'):
-                asyncio.run(text_to_speech(f'./audio_file/{title}.wav', text))
-
-            print(
-                f'The copy of {title} is completed, it took {str(datetime.now() - now).split(".")[0]}.')
-            with open('./audio_file/Last_url.txt', 'w', encoding='utf-8') as file:
-                file.write(url)
-
-    def copy_text_files(copy_page):
-        text_folder = './text_file'
-        if not os.path.exists(text_folder):
-            os.makedirs(text_folder)
-
-        print(f'Starting the copy process at {now.strftime("%H:%M:%S")}')
+        copy_page = int(input('How many pages do you want to copy: '))
+        zip_file = input(
+            'Whether to compress multiple-page document into a single audio file? (y/n):')
 
         if zip_file == 'y':
-            zip_page = int(
-                input('How many pages would you like to compress into a .wav file?'))
+
+            zip_page = int(input('How many pages do you want to compress:'))
+
             if isinstance(copy_page, int):
-                copy_pages(zip_page, copy_page)
+                if not os.path.exists(text_folder):
+                    os.makedirs(text_folder)
+                print(f'Start copy: {now.strftime("%H:%M:%S")}')
+
+                first_title = ''
+                last_title = ''
+                first_url = ''
+                last_url = ''
+
+                for i in range(copy_page//zip_page):
+                    total_text = ''
+
+                    for k in range(zip_page):
+                        title, url, text = page_data(url)
+                        text = ''.join(text)
+                        total_text += text
+                        if k == 0:
+                            first_url = url
+                            first_title = title
+                        last_url = url
+                        last_title = title
+
+                    now = datetime.now()
+                    audio_name = f'{first_title}節_{last_title}節.wav'
+
+                    try:
+                        first_title = generate_audio_name(first_title)
+                        last_title = generate_audio_name(last_title)
+
+                        with open('./audio_file/url.txt', 'w', encoding='utf-8') as file:
+                            file.write(
+                                f'first page:{first_url}\n last page:{last_url}')
+
+                        if not os.path.exists(f'./audio_file/第{first_title}節_第{last_title}節.wav'):
+                            asyncio.run(
+                                main(f'./audio_file/第{first_title}節_第{last_title}節.wav', total_text))
+                            pass
+
+                        print(
+                            f"Copy {first_title}_{last_title} done. Passed time: {str(datetime.now() - now).split('.')[0]}.")
+
+                    except IndexError:
+                        print('Title format error')
         else:
             if isinstance(copy_page, int):
-                copy_single_page(copy_page)
 
-    url = input('Please provide the URL of the starting point for your novel:')
-    if url != '':
-        copy_page = int(input('How many pages would you like to copy?:'))
-        zip_file = input(
-            'Would you like to merge multiple pages of a novel into a single audio file? (y/n):')
+                if not os.path.exists(text_folder):
+                    os.makedirs(text_folder)
 
-        copy_text_files(copy_page)
+                print(f'Start copy: {now.strftime("%H:%M:%S")}')
+
+                for i in range(copy_page):
+                    title, url, text = page_data(url)
+                    text = ''.join(text)
+                    now = datetime.now()
+
+                    if not os.path.exists(f'./audio_file/{title}.wav'):
+                        asyncio.run(main(f'./audio_file/{title}.wav', text))
+
+                    time_taken = datetime.now() - now
+                    print(
+                        f'Copy of {title} is done. Time taken: {str(time_taken).split(".")[0]}')
+
+                    with open('./audio_file/Last_url.txt', 'w', encoding='utf-8') as file:
+                        file.write(url)
