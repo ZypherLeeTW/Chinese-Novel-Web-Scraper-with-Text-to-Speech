@@ -90,7 +90,7 @@ if __name__ == '__main__':
                     last_url = url
                     last_title = title
                 except TypeError:
-                    print('網址錯誤')
+                    print('URL error')
                     break
 
             now = datetime.now()
@@ -106,9 +106,9 @@ if __name__ == '__main__':
                         f'./audio_file/第{first_title}節_第{last_title}節.wav', total_text))
 
                 print(
-                    f'copy 第{first_title}節_第{last_title}節 done, pass : {str(datetime.now() - now).split(".")[0]}')
+                    f'Copy from section {first_title} to section {last_title} done. Time elapsed: {str(datetime.now() - now).split(".")[0]}')
             except IndexError:
-                print('標題格式錯誤')
+                print('The title format is incorrect.')
 
     def copy_single_page(copy_page):
         for i in range(copy_page):
@@ -120,7 +120,7 @@ if __name__ == '__main__':
                 asyncio.run(text_to_speech(f'./audio_file/{title}.wav', text))
 
             print(
-                f'copy {title} done, pass : {str(datetime.now() - now).split(".")[0]}')
+                f'The copy of {title} is completed, it took {str(datetime.now() - now).split(".")[0]}.')
             with open('./audio_file/Last_url.txt', 'w', encoding='utf-8') as file:
                 file.write(url)
 
@@ -129,19 +129,21 @@ if __name__ == '__main__':
         if not os.path.exists(text_folder):
             os.makedirs(text_folder)
 
-        print(f'start copy : {now.strftime("%H:%M:%S")}')
+        print(f'Starting the copy process at {now.strftime("%H:%M:%S")}')
 
         if zip_file == 'y':
-            zip_page = int(input('How many pages do you want to zip:'))
+            zip_page = int(
+                input('How many pages would you like to compress into a .wav file?'))
             if isinstance(copy_page, int):
                 copy_pages(zip_page, copy_page)
         else:
             if isinstance(copy_page, int):
                 copy_single_page(copy_page)
 
-    url = input('Path your start uu novel url:')
+    url = input('Please provide the URL of the starting point for your novel:')
     if url != '':
-        copy_page = int(input('How many pages do you want to copy:'))
-        zip_file = input('Do you want to zip the text file? (y/n):')
+        copy_page = int(input('How many pages would you like to copy?:'))
+        zip_file = input(
+            'Would you like to merge multiple pages of a novel into a single audio file? (y/n):')
 
         copy_text_files(copy_page)
