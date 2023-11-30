@@ -69,6 +69,15 @@ def page_data(soup):
 
     return timu, next_link, data_list
 
+
+def generate_audio_name(title):
+    if '章' in title:
+        title = int(title.split('第')[1].split('章')[0])
+    elif '節' in title:
+        title = int(title.split('第')[1].split('節')[0])
+    return title
+
+
 # Text-to-speech and save
 
 
@@ -86,22 +95,77 @@ if __name__ == '__main__':
     if url != '':
 
         copy_page = int(input('How many pages do you want to copy:'))
+        zip_file = input('Do you want to zip the text file? (y/n):')
 
-        if isinstance(copy_page, int):
+        if zip_file == 'y':
 
-            # Create folder if not exist
-            if not os.path.exists(text_folder):
-                os.makedirs(text_folder)
+            zip_page = int(input('How many pages do you want to zip:'))
 
-            # Start copying
-            print(f'start copy : {now.strftime("%H:%M:%S")}')
-            for i in range(copy_page):
+            if isinstance(copy_page, int):
+                # Create folder if not exist
+                if not os.path.exists(text_folder):
+                    os.makedirs(text_folder)
+                # Start copying
+                print(f'start copy : {now.strftime("%H:%M:%S")}')
 
-                title, url, text = page_data(url)
-                text = ''.join(text)
+                first_title = ''
+                last_title = ''
+                first_url = ''
+                last_url = ''
 
-                if not os.path.exists(f'./audio_file/{title}.wav'):
-                    asyncio.run(main(f'./audio_file/{title}.wav', text))
+                for i in range(copy_page//zip_page):
+                    total_text = ''
 
-                print(
-                    f'copy {title} done, pass : {str(datetime.now() - now).split(".")[0]}')
+                    for k in range(zip_page):
+                        title, url, text = page_data(url)
+                        text = ''.join(text)
+                        total_text += text
+                        if k == 0:
+                            first_url = url
+                            first_title = title
+                        last_url = url
+                        last_title = title
+
+                    now = datetime.now()
+                    audio_name = f'{first_title}節_{last_title}節.wav'
+
+                    try:
+                        first_title = generate_audio_name(first_title)
+                        last_title = generate_audio_name(last_title)
+
+                        with open('./audio_file/Last_url.txt', 'w', encoding='utf-8') as file:
+                            file.write(
+                                f'first page:{first_url}\n last page:{last_url}')
+
+                        if not os.path.exists(f'./audio_file/第{first_title}節_第{last_title}節.wav'):
+                            asyncio.run(
+                                main(f'./audio_file/第{first_title}節_第{last_title}節.wav', total_text))
+                            pass
+
+                        print(
+                            f'copy {title} done, pass : {str(datetime.now() - now).split(".")[0]}')
+
+                    except IndexError:
+                        print('標題格式錯誤')
+        else:
+            if isinstance(copy_page, int):
+
+                # Create folder if not exist
+                if not os.path.exists(text_folder):
+                    os.makedirs(text_folder)
+
+                # Start copying
+                print(f'start copy : {now.strftime("%H:%M:%S")}')
+
+                for i in range(copy_page):
+                    title, url, text = page_data(url)
+                    text = ''.join(text)
+                    now = datetime.now()
+
+                    if not os.path.exists(f'./audio_file/{title}.wav'):
+                        asyncio.run(main(f'./audio_file/{title}.wav', text))
+
+                    print(
+                        f'copy {title} done, pass : {str(datetime.now() - now).split(".")[0]}')
+                    with open('./audio_file/Last_url.txt', 'w', encoding='utf-8') as file:
+                        file.write(url)
